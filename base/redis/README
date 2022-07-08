@@ -1,0 +1,23 @@
+After applying, you need to create the redis cluster
+
+First you need to find out the IP addresses of each of the pods.
+```
+kc get pod redis-cluster-0 -o yaml -n example-dev|grep podIP:
+kc get pod redis-cluster-1 -o yaml -n example-dev|grep podIP:
+kc get pod redis-cluster-2 -o yaml -n example-dev|grep podIP:
+kc get pod redis-cluster-3 -o yaml -n example-dev|grep podIP:
+kc get pod redis-cluster-4 -o yaml -n example-dev|grep podIP:
+kc get pod redis-cluster-5 -o yaml -n example-dev|grep podIP:
+```
+
+Then you need to exec into one of the nodes and run the following:
+```
+kc exec -it redis-cluster-0 -n example-dev -- bash
+redis-cli --cluster create 172.17.0.5:6379 172.17.0.6:6379 172.17.0.7:6379 172.17.0.8:6379 172.17.0.9:6379 172.17.0.10:6379 --cluster-replicas 1
+```
+
+To check on the cluster status:
+```
+redis-cli
+> cluster info
+```
